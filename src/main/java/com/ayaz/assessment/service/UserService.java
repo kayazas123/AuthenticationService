@@ -74,7 +74,7 @@ public class UserService {
      * @return Optional of user, empty if the user already exists.
      */
     public Optional<User> signup(String username, String password, String firstName, String lastName) {
-        LOGGER.info("New user attempting to sign in");
+        LOGGER.info("New user attempting to sign in username={}", username);
         Optional<User> user = Optional.empty();
         if (!userRepository.findByUsername(username).isPresent()) {
             Optional<Role> role = roleRepository.findByRoleName("ROLE_API_ACCESS");

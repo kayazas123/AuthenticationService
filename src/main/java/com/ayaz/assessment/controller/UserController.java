@@ -3,6 +3,7 @@ package com.ayaz.assessment.controller;
 
 import com.ayaz.assessment.domain.User;
 import com.ayaz.assessment.dto.LoginDto;
+import com.ayaz.assessment.dto.LoginResponseDto;
 import com.ayaz.assessment.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
 
@@ -19,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "api/users")
 @Api(description = "API to authenticate user")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class UserController {
 
     @Autowired
@@ -27,9 +30,12 @@ public class UserController {
     @PostMapping("/signin")
     @ApiOperation(value = "Login")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 403, message = "User not found") })
-    public String login(@RequestBody @Valid LoginDto loginDto) {
-        return userService.signin(loginDto.getUsername(), loginDto.getPassword()).orElseThrow(()->
+    public LoginResponseDto login(@RequestBody @Valid LoginDto loginDto) {
+        String token = userService.signin(loginDto.getUsername(), loginDto.getPassword()).orElseThrow(() ->
                 new HttpServerErrorException(HttpStatus.FORBIDDEN, "Login Failed"));
+        LoginResponseDto loginResponseDto = new LoginResponseDto();
+        loginResponseDto.setToken(token);
+        return loginResponseDto;
     }
 
     @ApiOperation(value = "Signup")
