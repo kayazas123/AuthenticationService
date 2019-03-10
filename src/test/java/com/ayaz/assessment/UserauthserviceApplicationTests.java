@@ -1,4 +1,4 @@
-package com.ayaz.assessment.authapi.userauthservice;
+package com.ayaz.assessment;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
